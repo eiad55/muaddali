@@ -157,7 +157,7 @@ body {
 .site-footer { border-top: 1px solid var(--line); color: var(--ink-soft); font-size: .9rem; padding: 16px 0 30px; }
 
 @media (max-width: 640px) {
-  .course-row { grid-template-columns: 1fr 1fr 92px 1fr 74px 32px; gap: 6px; padding: 8px 10px; }
+  .course-row { grid-template-columns: 1fr 1fr 1fr; gap: 6px; padding: 8px 10px; }
   .course-row.head { display: none; }
   .grid2 { grid-template-columns: 1fr; }
   .result-big { font-size: 2.1rem; }
