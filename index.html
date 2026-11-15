@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>معدّلي — حاسبة المعدل الجامعي</title>
+<meta name="description" content="حاسبة معدل فصلي وتراكمي بأنظمة تقدير جامعية موثّقة المصدر. كل الحساب داخل متصفحك — لا تُرسل أي بيانات لأي مكان.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <h1 class="logo">معدّلي</h1>
+    <p class="tagline">حاسبة المعدل الجامعي بأنظمة تقدير موثّقة المصدر — حساب فوري داخل متصفحك، بلا حسابات وبلا إرسال أي بيانات.</p>
+  </div>
+</header>
+
+<nav class="tabs wrap" role="tablist" aria-label="أقسام معدّلي">
+  <button class="tab active" data-tab="calc" role="tab" id="tabbtn-calc" aria-selected="true" aria-controls="tab-calc">الحاسبة</button>
+  <button class="tab" data-tab="goal" role="tab" id="tabbtn-goal" aria-selected="false" aria-controls="tab-goal">مخطّط الهدف</button>
+  <button class="tab" data-tab="convert" role="tab" id="tabbtn-convert" aria-selected="false" aria-controls="tab-convert">محوّل التقدير</button>
+  <button class="tab" data-tab="about" role="tab" id="tabbtn-about" aria-selected="false" aria-controls="tab-about">الأنظمة والمصادر</button>
+</nav>
+
+<main class="wrap">
+
+  <!-- ============ الحاسبة ============ -->
+  <section id="tab-calc" class="panel active" role="tabpanel" aria-labelledby="tabbtn-calc">
+    <div class="card">
+      <label class="field-label" for="calc-system">نظام التقدير</label>
+      <select id="calc-system" class="input"></select>
+
+      <div id="policy-row" class="policy-row">
+        <label class="field-label" for="retake-policy">معاملة المقرر المُعاد (حين يتكرر رمز المقرر)</label>
+        <select id="retake-policy" class="input">
+          <option value="last">الأخيرة فقط — الافتراضي المقترح</option>
+          <option value="best">الأعلى فقط</option>
+          <option value="all">كل المحاولات تدخل الحساب</option>
+        </select>
+        <p class="hint">خيار معلَن لأن اللوائح الجامعية نفسها تختلف في الإعادة. تُطبَّق السياسة على المعدل التراكمي؛ أما المعدل الفصلي فيبقى تاريخيًا كما في كشف درجات فصله — لا يتغيّر بأثر رجعي إذا أعدت مقررًا في فصل لاحق. واستثناء موثّق واحد: في صيغة جامعة 6 أكتوبر تُرصد الدرجة المستبدَلة بعد إعادة مقرر راسب (F) بسقف B+ وفق لائحة الجامعة.</p>
+      </div>
+    </div>
+
+    <div id="semesters"></div>
+
+    <div class="actions">
+      <button id="add-semester" class="btn primary">+ إضافة فصل</button>
+      <button id="clear-all" class="btn ghost">مسح كل البيانات</button>
+    </div>
+
+    <div class="card result-card" id="calc-result" aria-live="polite"></div>
+
+    <p class="privacy-note">تُحفظ مدخلاتك تلقائيًا على جهازك فقط (تخزين المتصفح المحلي localStorage) لتكمل لاحقًا — لا تُرسل إلى أي خادم ولا تغادر جهازك.</p>
+  </section>
+
+  <!-- ============ مخطّط الهدف ============ -->
+  <section id="tab-goal" class="panel" role="tabpanel" aria-labelledby="tabbtn-goal">
+    <div class="card">
+      <h2>ما المعدل الذي تحتاجه في الفصول القادمة؟</h2>
+      <label class="field-label" for="goal-system">نظام التقدير</label>
+      <select id="goal-system" class="input"></select>
+      <div class="grid2">
+        <div>
+          <label class="field-label" for="goal-done-hours">الساعات المنجزة حتى الآن</label>
+          <input id="goal-done-hours" class="input" type="number" min="0" step="1" placeholder="مثال: 60">
+        </div>
+        <div>
+          <label class="field-label" for="goal-done-gpa">معدلك التراكمي الحالي</label>
+          <input id="goal-done-gpa" class="input" type="number" min="0" step="0.01" placeholder="مثال: 2.80">
+        </div>
+        <div>
+          <label class="field-label" for="goal-target">المعدل التراكمي المستهدف</label>
+          <input id="goal-target" class="input" type="number" min="0" step="0.01" placeholder="مثال: 3.20">
+        </div>
+        <div>
+          <label class="field-label" for="goal-future-hours">الساعات التي ستدرسها</label>
+          <input id="goal-future-hours" class="input" type="number" min="1" step="1" placeholder="مثال: 15">
+        </div>
+      </div>
+      <button id="goal-calc" class="btn primary">احسب المطلوب</button>
+      <div id="goal-result" class="goal-result" aria-live="polite"></div>
+      <p class="hint">المعادلة معلنة: المطلوب = [المستهدف × (المنجزة + القادمة) − نقاطك المنجزة] ÷ القادمة. إن كان الهدف مستحيلًا حسابيًا في هذه الساعات سنقولها صراحة.</p>
+    </div>
+  </section>
+
+  <!-- ============ محوّل التقدير ============ -->
+  <section id="tab-convert" class="panel" role="tabpanel" aria-labelledby="tabbtn-convert">
+    <div class="card">
+      <h2>تحويل تقدير بين الأنظمة</h2>
+      <div class="grid2">
+        <div>
+          <label class="field-label" for="conv-from">من نظام</label>
+          <select id="conv-from" class="input"></select>
+        </div>
+        <div>
+          <label class="field-label" for="conv-to">إلى نظام</label>
+          <select id="conv-to" class="input"></select>
+        </div>
+      </div>
+      <label class="field-label" for="conv-type">صورة الإدخال</label>
+      <select id="conv-type" class="input">
+        <option value="percent">نسبة مئوية</option>
+        <option value="letter">حرف / تقدير لفظي</option>
+      </select>
+      <div id="conv-value-wrap">
+        <label class="field-label" for="conv-value">القيمة</label>
+        <input id="conv-value" class="input" type="number" min="0" max="100" step="0.01" placeholder="مثال: 87">
+        <select id="conv-letter" class="input ltr" style="display:none"></select>
+      </div>
+      <button id="conv-calc" class="btn primary">حوّل</button>
+      <div id="conv-result" class="goal-result" aria-live="polite"></div>
+      <p class="hint">التحويل يمرّ بالنسبة المئوية حصرًا. وعند الإدخال بحرف يُمثَّل الحرف بمنتصف نطاقه المئوي في نظامه الأصلي — اصطلاح معلَن، فالنتيجة عندئذ تقريبية بطبيعتها. واستثناء واحد: حرف الرسوب F يُمثَّل بـ0% ليبقى راسبًا في النظام الهدف مهما اختلف عرض نطاقات الرسوب.</p>
+    </div>
+  </section>
+
+  <!-- ============ الأنظمة والمصادر ============ -->
+  <section id="tab-about" class="panel" role="tabpanel" aria-labelledby="tabbtn-about">
+    <div class="card">
+      <h2>الأنظمة المدعومة ومصادرها</h2>
+      <ul class="systems-list">
+        <li><strong>السعودي الموحّد — عمود 4.00</strong> (صيغة جامعة الملك فهد للبترول والمعادن): من لائحة الدراسة والاختبارات الرسمية، ملحق (C)، وصفحة مسجّل الجامعة. الراسب F = ‏0.00.</li>
+        <li><strong>السعودي الموحّد — عمود 5.00</strong> (صيغة جامعة الملك سعود): من الجدول الرسمي نفسه ولائحة الجامعة. <strong>تنبيه: الراسب F هنا = ‏1.00 لا 0.00</strong> — اختلاف موثّق داخل النظام السعودي نفسه، وبعض الحاسبات على الويب تخطئ فيه.</li>
+        <li><strong>جامعة قطر — 4.00</strong>: من وثائق الجامعة الرسمية. لا يوجد A+ في هذا النظام؛ أعلى حرف A وبخطوات 0.50.</li>
+        <li><strong>المصري بالساعات المعتمدة — صيغة جامعة 6 أكتوبر (O6U)</strong>: من اللائحة الداخلية المنشورة على موقع الجامعة (المواد 8 و10). لا يوجد «نظام مصري 4.0» واحد — جامعات مصرية أخرى تختلف (أسيوط والعلمين مثلًا)، وهذه الصيغة باسم جامعتها فقط.</li>
+        <li><strong>المصري التقليدي بالنسبة المئوية</strong>: من لوائح منشورة متطابقة النص (الإسكندرية، الزقازيق، بنها). الحساب بجمع الدرجات لا بمتوسط النسب.</li>
+        <li><strong>اليمني بالنسبة المئوية — جامعة صنعاء، صيغة الدبلوم العالي</strong>: من صفحة البرنامج على موقع الجامعة الرسمي. توجد صيغة ثانية داخل الجامعة نفسها (دليل كلية الطب) تختلف في حدود «جيد» و«مقبول»، لكن نسختها المتاحة أثناء الإعداد لم تكن على نطاق الجامعة فلم تُتحقَّق — <strong>لذلك لم تدخل هذا المنتج</strong> حتى لا نبني على مصدر غير مؤكد.</li>
+      </ul>
+      <h2>قواعد الحساب المعلنة</h2>
+      <ul class="systems-list">
+        <li>المعدل التراكمي يُحسب دائمًا من مجاميع النقاط والساعات الخام منذ الالتحاق — <strong>أبدًا</strong> من متوسط المعدلات الفصلية (المتوسط البسيط خطأ حسابي حين تختلف ساعات الفصول).</li>
+        <li>في الأنظمة النسبية: النسبة التراكمية = مجموع الدرجات ÷ مجموع النهايات العظمى — لا بمتوسط نسب المقررات، وبلا وزن للساعات.</li>
+        <li>التقريب نصف-لأعلى لمنزلتين عشريتين على الناتج النهائي فقط، والمقارنة بنطاقات التقدير تتم قبل أي تقريب.</li>
+        <li>معاملة المقرر المُعاد خيار بيدك في الحاسبة (الأخيرة/الأعلى/الكل) لأن اللوائح تختلف فيها — وتُطبَّق على التراكمي فقط؛ المعدل الفصلي يبقى كما في كشف درجات فصله. واستثناء موثّق: في صيغة جامعة 6 أكتوبر تُستبدل درجة الرسوب F بعد النجاح في الإعادة بسقف B+ ‏(3.30) بلائحة الجامعة، فيُطبَّق السقف تلقائيًا في ذلك النظام.</li>
+        <li>أي قيمة خارج مجال نظامها — نقاط مباشرة فوق حدّ النظام أو سالبة، درجة أعلى من نهايتها العظمى، ساعات صفر أو سالبة — تُرفض بتنبيه صريح يسمّي السبب ولا تُستبعد من الحساب بصمت أبدًا.</li>
+        <li>مطابقة مقررات الإعادة برمزها لا تتأثر بحالة الأحرف: MATH101 وmath101 المقرر نفسه.</li>
+        <li>الرموز الإدارية التي لا تدخل المعدل أصلًا (مثل W منسحب، IP جارٍ) غير مدعومة كمدخلات؛ والرمزان الداخلان بصفر/واحد موثّقًا (DN محروم، WF منسحب راسبًا عند KFUPM) متاحان في النظامين السعوديين.</li>
+      </ul>
+      <h2>الخصوصية</h2>
+      <p>كل الحساب يتم داخل متصفحك. لا حسابات، لا خوادم، لا تتبّع. الحفظ الوحيد محلي على جهازك (localStorage) ويمكنك مسحه بزر «مسح كل البيانات».</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>معدّلي — أداة حسابية بأنظمة موثّقة المصدر. تحقّق دائمًا من لائحة جامعتك الرسمية عند أي قرار أكاديمي.</p>
+  </div>
+</footer>
+
+<script src="core.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
